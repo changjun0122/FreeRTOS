@@ -48,6 +48,9 @@ compile_commands.json
 DevEnv/
 DevEnv.zip
 
+# ---------- 4.1 AI 助手的工作区数据（会话备份，非代码） ----------
+.workbuddy/
+
 # ---------- 5. 临时文件 / 系统垃圾 ----------
 *~
 *.bak
