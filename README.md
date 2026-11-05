@@ -28,6 +28,9 @@ FreeRTOS/
 ├── P2_Queue/                    # 例程 2：消息队列（结构同上）
 │   └── ...
 │
+├── docs/
+│   └── troubleshooting.md       # 踩坑记录：现象 → 根因 → 解决 → 验证
+│
 ├── DevEnv/                      # 本地工具链（arm-none-eabi-gcc + OpenOCD，不入库）
 └── .gitignore
 ```
@@ -74,6 +77,27 @@ openocd -f interface/stlink.cfg -f target/stm32f1x.cfg \
 ```
 
 没有 ST-Link 时也可以用 STM32CubeProgrammer 直接下载 `.elf` / `.hex`。
+
+## 调试（OpenOCD）
+
+CLion 自带的 `ST-LINK_gdbserver` 在本机配置失效（现象与排查过程见 [docs/troubleshooting.md](docs/troubleshooting.md) 第 001 条），所以统一改用 OpenOCD 当 GDB Server。
+
+`DevEnv/stm32f1_stlink.cfg` 已经把「调试器 + 芯片」两层配置拼在一起，内容是：
+
+```tcl
+source [find interface/stlink.cfg]   # ST-Link：hla 驱动，兼容 V1/V2/V2-1/V3
+source [find target/stm32f1x.cfg]    # STM32F1 系列（Cortex-M3）
+reset_config none
+```
+
+手动拉起服务器：
+
+```bash
+openocd.exe -s <openocd目录>/share/openocd/scripts \
+  -f D:\stm32\FreeRTOS\DevEnv\stm32f1_stlink.cfg
+```
+
+日志里出现 `device id = 0x410` 和 `flash size = 64 KiB` 就说明连上了目标。注意调试时不能加 `gdb_port disabled`——那是纯烧录用的参数，一旦加上 OpenOCD 就不监听 GDB 端口。
 
 ## 版本控制约定
 
