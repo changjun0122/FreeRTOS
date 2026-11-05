@@ -1,0 +1,61 @@
+# ============================================================
+# FreeRTOS 学习仓库 .gitignore
+# 原则：只提交「能复现工程的源头文件」——代码、.ioc、CMake 脚本、链接脚本、启动文件
+# ============================================================
+
+# ---------- 1. 编译产物 ----------
+build/
+Debug/
+Release/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+*.o
+*.obj
+*.d
+*.su
+*.elf
+*.hex
+*.bin
+*.map
+*.axf
+*.lst
+*.crf
+*.dep
+*.lnp
+*.sct
+*.iex
+*.ltrans
+*.a
+*.lib
+
+# ---------- 2. IDE / 编辑器配置 ----------
+.idea/
+.vscode/
+.settings/
+.cproject
+.project
+*.launch
+*.iml
+*.code-workspace
+
+# ---------- 3. 工具自动生成的元数据（可由 .ioc 重新生成） ----------
+.mxproject
+
+# ---------- 4. 本地工具链（体积约 1.2 GB，请自行安装） ----------
+DevEnv/
+DevEnv.zip
+
+# ---------- 5. 临时文件 / 系统垃圾 ----------
+*~
+*.bak
+*.orig
+*.rej
+*.swp
+*.tmp
+*.log
+Thumbs.db
+desktop.ini
+.DS_Store
