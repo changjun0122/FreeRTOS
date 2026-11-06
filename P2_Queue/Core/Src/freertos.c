@@ -144,8 +144,8 @@ void StartDataTask(void *argument)
     uint32_t btnCount;
     osMessageQueueGet(BtnQueueHandle, &btnCount, NULL, osWaitForever);
     dataCount++;
-    osDelay(1000);
     sprintf(msg, "按键次数: %d, 数据次数: %d", (int)btnCount, (int)dataCount);
+    osDelay(1000);
     HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
   }
   /* USER CODE END StartDataTask */
