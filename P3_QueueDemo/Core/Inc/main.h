@@ -41,6 +41,10 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+extern osSemaphoreId_t KeySemaphoreHandle;
+extern osMessageQueueId_t LEDQueueHandle;
+extern osMessageQueueId_t CommandQueueHandle;
+
 
 /* USER CODE END EC */
 

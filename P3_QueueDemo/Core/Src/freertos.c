@@ -22,7 +22,7 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
-#include "Types/LedTypes.h"
+#include "Types/LEDType.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -62,6 +62,28 @@ const osThreadAttr_t LEDTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for CommandTask */
+osThreadId_t CommandTaskHandle;
+const osThreadAttr_t CommandTask_attributes = {
+  .name = "CommandTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityHigh1,
+};
+/* Definitions for LEDQueue */
+osMessageQueueId_t LEDQueueHandle;
+const osMessageQueueAttr_t LEDQueue_attributes = {
+  .name = "LEDQueue"
+};
+/* Definitions for CommandQueue */
+osMessageQueueId_t CommandQueueHandle;
+const osMessageQueueAttr_t CommandQueue_attributes = {
+  .name = "CommandQueue"
+};
+/* Definitions for KeySemaphore */
+osSemaphoreId_t KeySemaphoreHandle;
+const osSemaphoreAttr_t KeySemaphore_attributes = {
+  .name = "KeySemaphore"
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -70,6 +92,7 @@ const osThreadAttr_t LEDTask_attributes = {
 
 void StartKeyTask(void *argument);
 extern void StartLEDTask(void *argument);
+extern void StartCommandTask(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -87,6 +110,10 @@ void MX_FREERTOS_Init(void) {
   /* add mutexes, ... */
   /* USER CODE END RTOS_MUTEX */
 
+  /* Create the semaphores(s) */
+  /* creation of KeySemaphore */
+  KeySemaphoreHandle = osSemaphoreNew(1, 0, &KeySemaphore_attributes);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
@@ -95,9 +122,15 @@ void MX_FREERTOS_Init(void) {
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
+  /* Create the queue(s) */
+  /* creation of LEDQueue */
+  LEDQueueHandle = osMessageQueueNew (16, sizeof(LEDMessage*), &LEDQueue_attributes);
+
+  /* creation of CommandQueue */
+  CommandQueueHandle = osMessageQueueNew (16, sizeof(uint8_t), &CommandQueue_attributes);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
-  LEDQueueHandle = osMessageQueueNew(10, sizeof(LEDMessage*), &LEDQueue_attributes);
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -106,6 +139,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of LEDTask */
   LEDTaskHandle = osThreadNew(StartLEDTask, NULL, &LEDTask_attributes);
+
+  /* creation of CommandTask */
+  CommandTaskHandle = osThreadNew(StartCommandTask, NULL, &CommandTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */

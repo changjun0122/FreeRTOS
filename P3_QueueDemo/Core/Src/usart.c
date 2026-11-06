@@ -118,6 +118,20 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 }
 
 /* USER CODE BEGIN 1 */
+uint8_t rxData; //存放收到的字节
 
+void UART2_Receive_Start(void)
+{
+    HAL_UART_Receive_IT(&huart2, &rxData, 1);
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+  if(huart->Instance == USART2)
+  {
+    osMessageQueuePut(CommandQueueHandle, &rxData, 0, 0);
+    HAL_UART_Receive_IT(&huart2, &rxData, 1);
+  }
+}
 /* USER CODE END 1 */
 
